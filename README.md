@@ -78,6 +78,7 @@ assets/js/site.js       de website opbouwen
 assets/js/admin.js      het beheer
 assets/js/dom.js        kleine DOM-hulpjes (alles via textContent)
 assets/css/             base.css (gedeeld), site.css, admin.css
+qr/                     QR-codes naar de site (los, SVG, en een printkaart)
 ```
 
 Lokaal bekijken: `python3 -m http.server` in de repo en open
