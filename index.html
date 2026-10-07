@@ -1,56 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pass The Dutchie</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #a6d8ff;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-        }
-        img {
-            width: 100%;
-            max-width: 800px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-        .menu-links {
-            margin-top: 20px;
-        }
-        .menu-links a {
-            display: block;
-            padding: 10px;
-            background-color: #0044cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 5px;
-        }
-        .menu-links a:hover {
-            background-color: #0033aa;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pass The Dutchie · Beach bar & restaurant, Sint Maarten</title>
+  <meta name="description" content="Dutch bites, island vibes. Breakfast, burgers, Dutch snacks and cocktails on the Boardwalk of Sint Maarten.">
+  <meta name="theme-color" content="#0a1224">
+  <meta property="og:title" content="Pass The Dutchie">
+  <meta property="og:description" content="Dutch bites, island vibes — Boardwalk 137, Sint Maarten.">
+  <meta property="og:image" content="assets/img/logo.jpg">
+  <link rel="icon" href="assets/img/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/img/icon-180.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,500;1,9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/site.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to Pass The Dutchie </h1>
-        <p>Follow us on Instagram: <strong>@passthedutchie.sxm</strong></p>
-         <div class="menu-links">
-            <a href="menu.html">View Our Menu</a>
-        </div>
-        <img src="mnt/data/1_20250226_150518_0000.png" alt="Pass The Dutchie Poster">
-        <div class="menu-links">
-            <a href="menu.html">View Our Menu</a>
-        </div>
+  <a class="skip" href="#menu">Skip to menu</a>
+  <div id="demo-banner" class="demo-banner" hidden>Preview mode — you are seeing unpublished demo data from this browser.</div>
+
+  <header class="topbar" id="top">
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Pass The Dutchie — home">
+        <img src="assets/img/icon-192.png" alt="" width="40" height="40">
+        <span class="brand-name">Pass The Dutchie</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#menu">Menu</a>
+        <a href="#vibes">Weekly vibes</a>
+        <a href="#visit">Visit</a>
+      </nav>
+      <a class="btn btn-gold btn-sm order-btn" id="order-top" href="#visit">Order</a>
     </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow" id="hero-eyebrow">Boardwalk · Sint Maarten</p>
+          <h1 class="hero-title"><span>Pass The</span> <em>Dutchie</em></h1>
+          <p class="hero-tagline" id="hero-tagline">Dutch bites, island vibes</p>
+          <p class="hero-intro" id="hero-intro"></p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="#menu">See the menu</a>
+            <a class="btn btn-ghost" id="hero-whatsapp" href="#visit">Order on WhatsApp</a>
+          </div>
+          <ul class="hero-facts" id="hero-facts"></ul>
+        </div>
+        <div class="hero-art">
+          <div class="logo-card">
+            <img src="assets/img/logo.jpg" alt="Pass The Dutchie logo — a Delft-blue windmill" width="640" height="640">
+          </div>
+          <div class="sticker" aria-hidden="true">Don't be shy,<br>we don't keep it dry</div>
+        </div>
+      </div>
+    </section>
+
+    <div id="announcement" class="announcement" hidden></div>
+
+    <section class="menu-section" id="menu" aria-labelledby="menu-title">
+      <div class="section-head">
+        <p class="eyebrow">Eat &amp; drink</p>
+        <h2 id="menu-title">Our menu</h2>
+      </div>
+
+      <label class="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.9 12.13l4.24 4.23-1.42 1.42-4.23-4.24A7.5 7.5 0 1 1 10.5 3Zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11Z"/></svg>
+        <input type="search" id="menu-search" placeholder="Search the menu… (e.g. shrimp, mojito)" autocomplete="off" aria-label="Search the menu">
+      </label>
+      <div class="menu-sticky" id="menu-controls">
+        <div class="segmented" id="menu-tabs" role="tablist" aria-label="Menu"></div>
+        <nav class="chips" id="menu-chips" aria-label="Categories"></nav>
+      </div>
+
+      <div class="menu-grid" id="menu-grid" aria-live="polite">
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+      </div>
+      <p class="empty" id="menu-empty" hidden>Nothing found. Try another word.</p>
+    </section>
+
+    <section class="vibes" id="vibes" aria-labelledby="vibes-title">
+      <div class="section-head">
+        <p class="eyebrow">After 19:00</p>
+        <h2 id="vibes-title">Weekly vibes</h2>
+        <p class="section-sub">Food available and drinks at local prices.</p>
+      </div>
+      <div class="vibe-grid" id="vibe-grid"></div>
+    </section>
+
+    <section class="visit" id="visit" aria-labelledby="visit-title">
+      <div class="section-head">
+        <p class="eyebrow">Come by or order</p>
+        <h2 id="visit-title">Visit &amp; delivery</h2>
+      </div>
+      <div class="visit-grid" id="visit-grid"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <img src="assets/img/icon-192.png" alt="" width="56" height="56">
+      <p class="footer-name">Pass The Dutchie</p>
+      <p class="footer-sub" id="footer-sub"></p>
+      <div class="socials" id="socials"></div>
+      <p class="footer-small">© <span id="year"></span> Pass The Dutchie · <a href="beheer.html">Beheer</a></p>
+    </div>
+  </footer>
+
+  <nav class="dock" id="dock" aria-label="Quick actions"></nav>
+
+  <script type="module" src="assets/js/site.js"></script>
 </body>
 </html>
