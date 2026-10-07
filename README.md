@@ -70,6 +70,7 @@ nieuwe maken, opnieuw inloggen. De Gist blijft gewoon bestaan.
 ```
 index.html              de website
 beheer.html             het beheer
+menu.html               oude link (oude QR-codes), stuurt door naar index.html#menu
 data/menu.json          standaardmenu en terugval
 assets/js/config.js     het Gist-id
 assets/js/gist.js       de enige plek die met de GitHub-API praat
