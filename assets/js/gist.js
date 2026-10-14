@@ -100,3 +100,42 @@ export async function writeGist(token, gistId, fileName, doc) {
   });
   return { updatedAt: data.updated_at };
 }
+
+/* --------------------------------------------------------------- posters */
+
+/** A gist with loose files (the posters). `files` is {name: content|null}; null deletes. */
+export async function createFilesGist(token, description, files) {
+  const data = await request('/gists', {
+    token,
+    method: 'POST',
+    body: { description, public: true, files: apiFiles(files) },
+  });
+  return { id: data.id, owner: data.owner?.login || null };
+}
+
+export async function writeFiles(token, gistId, files) {
+  await request(`/gists/${encodeURIComponent(gistId)}`, {
+    token,
+    method: 'PATCH',
+    body: { files: apiFiles(files) },
+  });
+}
+
+function apiFiles(files) {
+  const out = {};
+  for (const [name, content] of Object.entries(files)) out[name] = content === null ? null : { content };
+  return out;
+}
+
+/** One file from the CDN, as text. Poster files never change, so caching is fine. */
+export async function readRawFile(owner, gistId, fileName) {
+  const url = `https://gist.githubusercontent.com/${encodeURIComponent(owner)}/${encodeURIComponent(gistId)}/raw/${encodeURIComponent(fileName)}`;
+  let res;
+  try {
+    res = await fetch(url);
+  } catch {
+    throw new GistError('Geen verbinding met GitHub.', { network: true });
+  }
+  if (!res.ok) throw errorFor(res.status, null);
+  return res.text();
+}

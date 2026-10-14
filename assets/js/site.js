@@ -1,9 +1,13 @@
 /* The public website: renders the menu document into the page. */
 
 import { el, $, $$, clear, formatPrice, telLink, whatsappLink, toast } from './dom.js';
-import { loadForVisitors } from './store.js';
+import { loadForVisitors, upcoming, todayIso } from './store.js';
+import { loadPoster } from './posters.js';
+
+const EVENTS = '__events';
 
 let doc = null;
+let source = '';
 let activeMenu = null;
 let query = '';
 
@@ -16,6 +20,7 @@ const ICONS = {
   bike: 'M3 6h11v9H3V6Zm11 3h4l3 3v3h-7V9ZM6.5 20a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm11 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z',
   wifi: 'M12 18.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM2 8.8a14.5 14.5 0 0 1 20 0l-1.5 1.5a12.4 12.4 0 0 0-17 0L2 8.8Zm3.5 3.5a9.5 9.5 0 0 1 13 0L17 13.8a7.4 7.4 0 0 0-10 0l-1.5-1.5Zm3.5 3.5a4.5 4.5 0 0 1 6 0l-3 3-3-3Z',
   insta: 'M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Zm0 2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM17.3 5.6a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z',
+  cal: 'M7 2h2v2h6V2h2v2h3a1 1 0 0 1 1 1v15a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h3V2Zm12 8H5v9h14v-9ZM9 12v2H7v-2h2Zm4 0v2h-2v-2h2Zm4 0v2h-2v-2h2Z',
   fb: 'M14 8V6.5c0-.8.2-1.3 1.4-1.3H17V2.2C16.6 2.1 15.6 2 14.4 2 11.9 2 10 3.6 10 6.3V8H7.5v3.3H10V22h4V11.3h2.8L17.2 8H14Z',
 };
 
@@ -73,25 +78,35 @@ function shortPlace(address) {
 
 /* ------------------------------------------------------------------ menu */
 
+function eventsAvailable() {
+  return visible(upcoming(doc.happenings)).length > 0 || visible(doc.events).length > 0;
+}
+
+function selectTab(id, { scroll = false } = {}) {
+  activeMenu = id;
+  renderTabs();
+  renderMenu();
+  if (scroll) $('#menu').scrollIntoView({ behavior: 'smooth' });
+  else {
+    const head = $('#menu-controls');
+    if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 function renderTabs() {
-  const menus = doc.menus.filter((m) => visible(m.categories).length);
-  if (!menus.find((m) => m.id === activeMenu)) activeMenu = menus[0]?.id ?? null;
+  const tabsList = doc.menus.filter((m) => visible(m.categories).length).map((m) => ({ id: m.id, name: m.name }));
+  if (eventsAvailable()) tabsList.push({ id: EVENTS, name: 'Events' });
+  if (!tabsList.find((t) => t.id === activeMenu)) activeMenu = tabsList[0]?.id ?? null;
   const tabs = clear($('#menu-tabs'));
-  tabs.hidden = menus.length < 2;
-  for (const m of menus) {
+  tabs.hidden = tabsList.length < 2;
+  for (const t of tabsList) {
     tabs.append(el('button', {
       type: 'button',
       role: 'tab',
-      class: m.id === activeMenu ? 'active' : '',
-      'aria-selected': String(m.id === activeMenu),
-      text: m.name,
-      onclick: () => {
-        activeMenu = m.id;
-        renderTabs();
-        renderMenu();
-        const head = $('#menu-controls');
-        if (head.getBoundingClientRect().top < 0) head.scrollIntoView({ behavior: 'smooth' });
-      },
+      class: `${t.id === activeMenu ? 'active' : ''}${t.id === EVENTS ? ' tab-events' : ''}`,
+      'aria-selected': String(t.id === activeMenu),
+      text: t.name,
+      onclick: () => selectTab(t.id),
     }));
   }
 }
@@ -105,6 +120,14 @@ function matches(item, category) {
 function renderMenu() {
   const grid = clear($('#menu-grid'));
   const chips = clear($('#menu-chips'));
+  grid.classList.toggle('events-mode', activeMenu === EVENTS && !query);
+  if (activeMenu === EVENTS && !query) {
+    renderEventsView(grid);
+    chips.hidden = true;
+    $('#menu-tabs').classList.remove('searching');
+    $('#menu-empty').hidden = true;
+    return;
+  }
   // While searching, look through every menu — guests don't know whether
   // a "Painkiller" is food or drink.
   const menus = query ? doc.menus : doc.menus.filter((m) => m.id === activeMenu);
@@ -174,23 +197,121 @@ function observeChips() {
   $$('#menu-grid .cat-card').forEach((card) => chipObserver.observe(card));
 }
 
-/* ----------------------------------------------------------------- vibes */
+/* ---------------------------------------------------------------- events */
 
 const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 
-function renderVibes() {
-  const events = visible(doc.events);
-  $('#vibes').hidden = !events.length;
+const asDate = (iso) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d);
+};
+const fmt = (iso, opts) => asDate(iso).toLocaleDateString('en-US', opts);
+const addDays = (iso, n) => {
+  const d = asDate(iso);
+  d.setDate(d.getDate() + n);
+  return todayIso(d);
+};
+
+/** "Today", "Tomorrow", or "Sat, Oct 31" — plus the end date for multi-day events. */
+function whenLabel(h) {
+  const today = todayIso();
+  const running = h.endDate && h.date <= today && h.endDate >= today;
+  if (running || h.date === today) return 'Today';
+  if (h.date === addDays(today, 1)) return 'Tomorrow';
+  const start = fmt(h.date, { weekday: 'short', month: 'short', day: 'numeric' });
+  if (!h.endDate || h.endDate === h.date) return start;
+  return `${start} – ${fmt(h.endDate, { weekday: 'short', month: 'short', day: 'numeric' })}`;
+}
+
+const isSoon = (label) => label === 'Today' || label === 'Tomorrow';
+
+function posterImg(id, cls, alt) {
+  const img = el('img', { class: cls, alt, decoding: 'async' });
+  img.hidden = true;
+  loadPoster(id, doc.info.posters, { demo: source === 'demo' }).then((src) => {
+    if (!src) return;
+    img.src = src;
+    img.hidden = false;
+    img.closest('.has-poster-slot')?.classList.add('has-poster');
+  });
+  return img;
+}
+
+function dateBlock(h) {
+  return el('div', { class: 'date-block', 'aria-hidden': 'true' }, [
+    el('span', { class: 'date-month', text: fmt(h.date, { month: 'short' }) }),
+    el('span', { class: 'date-day', text: fmt(h.date, { day: 'numeric' }) }),
+  ]);
+}
+
+function openEvent(h) {
+  const label = whenLabel(h);
+  const body = clear($('#lb-body'));
+  body.append(
+    h.poster ? posterImg(h.poster, 'lb-poster', `Poster: ${h.title}`) : null,
+    el('div', { class: 'lb-text' }, [
+      el('p', { class: 'lb-when' }, [icon('cal'), [label, h.time].filter(Boolean).join(' · ')]),
+      el('h2', { id: 'lb-title', text: h.title }),
+      h.description ? el('p', { class: 'lb-desc', text: h.description }) : null,
+    ]),
+  );
+  $('#lightbox').showModal();
+}
+
+function happeningCard(h, { compact = false } = {}) {
+  const label = whenLabel(h);
+  return el('button', {
+    type: 'button',
+    class: `${compact ? 'cu-card' : 'event-card'} has-poster-slot${isSoon(label) ? ' soon' : ''}`,
+    onclick: () => openEvent(h),
+  }, [
+    el('div', { class: 'ev-media' }, [
+      dateBlock(h),
+      h.poster ? posterImg(h.poster, 'ev-poster', '') : null,
+    ]),
+    el('div', { class: 'ev-text' }, [
+      el('p', { class: 'ev-when' }, [
+        isSoon(label) ? el('span', { class: 'badge hot', text: label }) : label,
+        h.time ? el('span', { class: 'ev-time', text: ` · ${h.time}` }) : null,
+      ]),
+      el('h3', { text: h.title }),
+      !compact && h.description ? el('p', { class: 'ev-desc', text: h.description }) : null,
+      el('span', { class: 'ev-more', text: h.poster ? 'View poster →' : 'More info →' }),
+    ]),
+  ]);
+}
+
+function renderComingUp() {
+  const featured = visible(upcoming(doc.happenings)).filter((h) => h.featured);
+  $('#coming-up').hidden = !featured.length;
+  clear($('#coming-up-row')).append(...featured.map((h) => happeningCard(h, { compact: true })));
+}
+
+function weeklyCard(ev) {
   const today = DAYS[new Date().getDay()];
-  clear($('#vibe-grid')).append(...events.map((ev) => {
-    const isToday = ev.day.toLowerCase().startsWith(today.slice(0, 3)) && ev.day.length >= 3;
-    return el('article', { class: `vibe${isToday ? ' today' : ''}` }, [
-      el('p', { class: 'vibe-day' }, [ev.day, isToday ? el('span', { class: 'badge hot', text: 'Tonight' }) : null]),
-      el('h3', { text: ev.title }),
-      ev.time ? el('p', { class: 'vibe-time' }, [icon('clock'), ev.time]) : null,
-      ev.description ? el('p', { class: 'vibe-desc', text: ev.description }) : null,
-    ]);
-  }));
+  const isToday = ev.day.length >= 3 && ev.day.toLowerCase().startsWith(today.slice(0, 3));
+  return el('article', { class: `vibe${isToday ? ' today' : ''}` }, [
+    el('p', { class: 'vibe-day' }, [ev.day, isToday ? el('span', { class: 'badge hot', text: 'Tonight' }) : null]),
+    el('h3', { text: ev.title }),
+    ev.time ? el('p', { class: 'vibe-time' }, [icon('clock'), ev.time]) : null,
+    ev.description ? el('p', { class: 'vibe-desc', text: ev.description }) : null,
+  ]);
+}
+
+function renderEventsView(grid) {
+  const dated = visible(upcoming(doc.happenings));
+  const weekly = visible(doc.events);
+  grid.append(el('div', { class: 'events-view' }, [
+    dated.length ? el('section', { class: 'ev-group' }, [
+      el('h3', { class: 'ev-group-title', text: 'Coming up' }),
+      el('div', { class: 'event-list' }, dated.map((h) => happeningCard(h))),
+    ]) : null,
+    weekly.length ? el('section', { class: 'ev-group' }, [
+      el('h3', { class: 'ev-group-title', text: 'Every week' }),
+      el('p', { class: 'section-sub', text: 'After 19:00 — food available and drinks at local prices.' }),
+      el('div', { class: 'vibe-grid' }, weekly.map(weeklyCard)),
+    ]) : null,
+  ]));
 }
 
 /* ----------------------------------------------------------------- visit */
@@ -258,13 +379,31 @@ function renderVisit() {
 
 function render(newDoc, meta) {
   doc = newDoc;
-  $('#demo-banner').hidden = meta.source !== 'demo';
+  source = meta.source;
+  $('#demo-banner').hidden = source !== 'demo';
+  if (location.hash === '#events' && activeMenu === null && eventsAvailable()) activeMenu = EVENTS;
   renderHero();
+  renderComingUp();
   renderTabs();
   renderMenu();
-  renderVibes();
   renderVisit();
 }
+
+// "#events" (top nav, shared links) opens the Events tab inside the menu.
+document.addEventListener('click', (e) => {
+  const link = e.target.closest('a[href="#events"]');
+  if (!link || !doc) return;
+  e.preventDefault();
+  history.replaceState(null, '', '#events');
+  selectTab(eventsAvailable() ? EVENTS : activeMenu, { scroll: true });
+});
+window.addEventListener('load', () => {
+  if (location.hash === '#events') setTimeout(() => $('#menu').scrollIntoView(), 50);
+});
+
+const lightbox = $('#lightbox');
+$('#lb-close').addEventListener('click', () => lightbox.close());
+lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.close(); });
 
 $('#year').textContent = new Date().getFullYear();
 

@@ -103,6 +103,7 @@ const price = (v) => {
   return Number.isFinite(n) ? n : null;
 };
 const arr = (v) => (Array.isArray(v) ? v : []);
+const isoDate = (v) => (/^\d{4}-\d{2}-\d{2}$/.test(str(v)) ? v : '');
 let counter = 0;
 const ensureId = (v, prefix) => str(v) || `${prefix}-${Date.now().toString(36)}${(counter++).toString(36)}`;
 
@@ -127,7 +128,19 @@ export function normalize(input) {
       hours: arr(info.hours).map((h) => ({ label: str(h?.label), value: str(h?.value) })),
       delivery: arr(info.delivery).map((h) => ({ label: str(h?.label), value: str(h?.value) })),
       wifi: { name: str(info.wifi?.name), password: str(info.wifi?.password) },
+      posters: { gistId: str(info.posters?.gistId), owner: str(info.posters?.owner) },
     },
+    happenings: arr(doc.happenings).map((h) => ({
+      id: ensureId(h?.id, 'hap'),
+      title: str(h?.title),
+      date: isoDate(h?.date),
+      endDate: isoDate(h?.endDate),
+      time: str(h?.time),
+      description: str(h?.description),
+      poster: str(h?.poster),
+      featured: h?.featured === undefined ? true : !!h.featured,
+      hidden: !!h?.hidden,
+    })),
     events: arr(doc.events).map((e) => ({
       id: ensureId(e?.id, 'ev'),
       day: str(e?.day),
@@ -158,4 +171,19 @@ export function normalize(input) {
       })),
     })),
   };
+}
+
+/* ------------------------------------------------------- dated events */
+
+/** Today as YYYY-MM-DD in the visitor's own timezone. */
+export function todayIso(now = new Date()) {
+  const p = (n) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
+/** Events that haven't finished yet, soonest first. */
+export function upcoming(happenings, today = todayIso()) {
+  return happenings
+    .filter((h) => h.date && (h.endDate || h.date) >= today)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
 }

@@ -15,6 +15,7 @@ Pages, en de gegevens staan als één JSON-bestand in een **Gist** (de "database
 | Gegevens | `menu.json` in een openbare Gist |
 | Lezen (bezoekers) | Zonder sleutel, rechtstreeks van de GitHub-API |
 | Schrijven (beheer) | Met een GitHub-sleutel die alleen Gists mag |
+| Posters | in een tweede Gist, die het beheer bij de eerste upload zelf aanmaakt |
 | Terugval | `data/menu.json` in de repo, plus een cache in de browser |
 
 De GitHub-API staat zonder sleutel 60 verzoeken per uur per IP-adres toe. Zitten
@@ -48,7 +49,14 @@ een gele balk erboven.
   verplaatsen en verwijderen. Per item: prijs, omschrijving, *uitverkocht*,
   *populair* en *verbergen*. Een categorie kan één prijs voor alles hebben
   (bijv. cocktails $14).
-- **Agenda** — de wekelijkse activiteiten. Op de dag zelf staat er "Tonight" bij.
+- **Events** — twee soorten:
+  - *Events met een datum* (bijv. een Halloween-feest), met tijd, omschrijving en
+    eventueel een **poster**. Met *Voorpagina* aan staat het event bovenaan de
+    site onder "Coming up", zodat je het direct ziet na het scannen van de QR-code.
+    Voorbije events verdwijnen vanzelf van de site.
+  - *Vaste weekavonden* (karaoke op dinsdag enz.). Op de dag zelf staat er "Tonight" bij.
+
+  Op de site staan beide onder het tabblad **Events**, naast Food en Drinks.
 - **Info** — slogan, introductie, een tijdelijke mededeling, adres, telefoon,
   WhatsApp (wordt de *Order*-knop), socials, openingstijden, bezorgkosten en Wi-Fi.
 - **Instellingen** — Gist-gegevens, back-up downloaden/terugzetten, terug naar het
@@ -76,6 +84,7 @@ assets/js/gist.js       de enige plek die met de GitHub-API praat
 assets/js/store.js      laden, cache, demo en het datamodel (normalize)
 assets/js/site.js       de website opbouwen
 assets/js/admin.js      het beheer
+assets/js/posters.js    posters verkleinen, uploaden en laden
 assets/js/dom.js        kleine DOM-hulpjes (alles via textContent)
 assets/css/             base.css (gedeeld), site.css, admin.css
 qr/                     QR-codes naar de site (los, SVG, en een printkaart)
@@ -83,3 +92,11 @@ qr/                     QR-codes naar de site (los, SVG, en een printkaart)
 
 Lokaal bekijken: `python3 -m http.server` in de repo en open
 `http://localhost:8000`.
+
+## Posters
+
+Een poster wordt in de browser verkleind (max. 1400 px, JPEG, meestal 100–400 kB)
+en als tekstbestand (`poster-….txt`, een data-URL) in een aparte Gist gezet. Zo
+blijft het menubestand klein en snel. Bezoekers laden posters via de CDN van
+GitHub. Haal je een poster weg of verwijder je een event, dan wordt het bestand
+bij het publiceren ook uit de poster-Gist gehaald.

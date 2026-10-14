@@ -30,7 +30,7 @@
       </a>
       <nav class="nav" aria-label="Main">
         <a href="#menu">Menu</a>
-        <a href="#vibes">Weekly vibes</a>
+        <a href="#events">Events</a>
         <a href="#visit">Visit</a>
       </nav>
       <a class="btn btn-gold btn-sm order-btn" id="order-top" href="#visit">Order</a>
@@ -40,6 +40,10 @@
   <main>
     <section class="hero">
       <div class="hero-glow" aria-hidden="true"></div>
+      <div class="coming-up" id="coming-up" hidden>
+        <p class="coming-up-label">Coming up</p>
+        <div class="coming-up-row" id="coming-up-row"></div>
+      </div>
       <div class="hero-inner">
         <div class="hero-copy">
           <p class="eyebrow" id="hero-eyebrow">Boardwalk · Sint Maarten</p>
@@ -84,15 +88,6 @@
       <p class="empty" id="menu-empty" hidden>Nothing found. Try another word.</p>
     </section>
 
-    <section class="vibes" id="vibes" aria-labelledby="vibes-title">
-      <div class="section-head">
-        <p class="eyebrow">After 19:00</p>
-        <h2 id="vibes-title">Weekly vibes</h2>
-        <p class="section-sub">Food available and drinks at local prices.</p>
-      </div>
-      <div class="vibe-grid" id="vibe-grid"></div>
-    </section>
-
     <section class="visit" id="visit" aria-labelledby="visit-title">
       <div class="section-head">
         <p class="eyebrow">Come by or order</p>
@@ -113,6 +108,11 @@
   </footer>
 
   <nav class="dock" id="dock" aria-label="Quick actions"></nav>
+
+  <dialog class="lightbox" id="lightbox" aria-labelledby="lb-title">
+    <button type="button" class="lb-close" id="lb-close" aria-label="Close">✕</button>
+    <div class="lb-body" id="lb-body"></div>
+  </dialog>
 
   <script type="module" src="assets/js/site.js"></script>
 </body>

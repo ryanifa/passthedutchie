@@ -4,10 +4,11 @@
 
 import { CONFIG } from './config.js';
 import { el, $, clear, formatPrice, uid, toast } from './dom.js';
-import { checkToken, readGist, createGist, writeGist, GistError } from './gist.js';
+import { checkToken, readGist, createGist, writeGist, createFilesGist, writeFiles, GistError } from './gist.js';
+import { compressImage, posterFile, loadPoster, rememberPoster, setDemoPoster, clearDemoPosters } from './posters.js';
 import {
   normalize, bundledDoc, activeGistId, setLocalGistId,
-  demoDoc, setDemoDoc, cacheDoc, storageGet, storageSet,
+  demoDoc, setDemoDoc, cacheDoc, storageGet, storageSet, upcoming, todayIso,
 } from './store.js';
 
 const SESSION_KEY = 'ptd.admin';
@@ -75,7 +76,8 @@ function toggle(label, checked, onchange) {
 
 /**
  * Generiek formulier in een dialoog.
- * fields: [{ key, label, type: text|textarea|price|checkbox|select, value, placeholder, help, options }]
+ * fields: [{ key, label, type: text|textarea|price|checkbox|select|date|custom, value, placeholder, help, options }]
+ * Een 'custom'-veld levert zelf { node, get } via f.render().
  */
 function openForm({ title, fields, submitText = 'Opslaan', onSave, onDelete, deleteText = 'Verwijderen' }) {
   const dialog = $('#modal');
@@ -92,6 +94,18 @@ function openForm({ title, fields, submitText = 'Opslaan', onSave, onDelete, del
       body.append(el('label', { class: 'switch' }, [input, el('span', { class: 'switch-track' }), el('span', { class: 'switch-label', text: f.label })]));
       inputs[f.key] = input;
       continue;
+    } else if (f.type === 'custom') {
+      const part = f.render();
+      inputs[f.key] = part;
+      // Geen <label>: die zou elke klik doorsturen naar de eerste knop erin.
+      body.append(el('div', { class: 'field' }, [
+        el('span', { class: 'field-label', text: f.label }),
+        part.node,
+        f.help ? el('span', { class: 'field-help', text: f.help }) : null,
+      ]));
+      continue;
+    } else if (f.type === 'date') {
+      input = el('input', { type: 'date', value: f.value || '' });
     } else if (f.type === 'select') {
       input = el('select', { value: f.value }, f.options.map((o) => el('option', { value: o.value, text: o.label })));
     } else if (f.type === 'price') {
@@ -132,6 +146,7 @@ function openForm({ title, fields, submitText = 'Opslaan', onSave, onDelete, del
     for (const f of fields) {
       const input = inputs[f.key];
       if (f.type === 'checkbox') values[f.key] = input.checked;
+      else if (f.type === 'custom') values[f.key] = input.get();
       else if (f.type === 'price') {
         const raw = input.value.trim().replace(',', '.').replace(/^[$€£ƒ]\s*/, '');
         if (raw === '') values[f.key] = null;
@@ -344,7 +359,7 @@ function renderSetup() {
 
 const TABS = [
   ['menu', 'Menu', '🍽'],
-  ['events', 'Agenda', '🎶'],
+  ['events', 'Events', '🎉'],
   ['info', 'Info', 'ℹ️'],
   ['settings', 'Instellingen', '⚙️'],
 ];
@@ -426,6 +441,7 @@ async function publish() {
       const { updatedAt } = await writeGist(state.session.token, state.gistId, CONFIG.gistFile, state.doc);
       state.baseUpdatedAt = updatedAt;
       cacheDoc(state.doc, updatedAt);
+      await cleanupPosters(JSON.parse(state.savedJson), state.doc);
     }
     state.savedJson = JSON.stringify(state.doc);
     storageSet(DRAFT_KEY, null);
@@ -435,6 +451,20 @@ async function publish() {
   } finally {
     state.saving = false;
     renderSaveBar();
+  }
+}
+
+/** Posters die bij deze publicatie niet meer gebruikt worden, uit de poster-Gist halen. */
+async function cleanupPosters(before, after) {
+  const used = (doc) => new Set((doc.happenings || []).map((h) => h.poster).filter(Boolean));
+  const now = used(after);
+  const gone = [...used(before)].filter((id) => !now.has(id));
+  const gistId = after.info.posters.gistId;
+  if (!gone.length || !gistId) return;
+  try {
+    await writeFiles(state.session.token, gistId, Object.fromEntries(gone.map((id) => [posterFile(id), null])));
+  } catch {
+    // Niet erg: een overgebleven poster kost alleen wat ruimte in de Gist.
   }
 }
 
@@ -677,10 +707,179 @@ function editMenu(menu) {
 /* ============================================================ events tab */
 
 function renderEventsTab(main) {
-  const events = state.doc.events;
+  renderHappenings(main);
+  renderWeekly(main);
+}
+
+const nlDate = (iso) => {
+  if (!iso) return '';
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+};
+
+function renderHappenings(main) {
+  const today = todayIso();
+  const list = state.doc.happenings;
+  const coming = upcoming(list, today);
+  const past = list.filter((h) => !coming.includes(h));
+
   main.append(el('div', { class: 'list-head' }, [
-    el('h2', { text: 'Wekelijkse agenda' }),
-    el('span', { class: 'muted small', text: 'Staat op de site onder "Weekly vibes".' }),
+    el('h2', { text: 'Events met een datum' }),
+    el('span', { class: 'muted small', text: 'Uitgelichte events staan bovenaan de voorpagina.' }),
+  ]));
+
+  const row = (h) => {
+    const isPast = !coming.includes(h);
+    const thumb = el('span', { class: 'ev-thumb has-poster-slot' }, [el('span', { class: 'ev-thumb-date', text: h.date ? h.date.slice(8) : '?' })]);
+    if (h.poster) {
+      loadPoster(h.poster, state.doc.info.posters, { demo: !!state.session.demo }).then((src) => {
+        if (src) thumb.append(el('img', { src, alt: '' }));
+      });
+    }
+    return el('li', { class: `item-row${h.hidden || isPast ? ' is-hidden' : ''}` }, [
+      el('button', { type: 'button', class: 'item-main with-thumb', onclick: () => editHappening(h) }, [
+        thumb,
+        el('span', { class: 'thumb-text' }, [
+          el('span', { class: 'item-top' }, [
+            el('span', { class: 'day-pill', text: h.date ? nlDate(h.date) : 'Geen datum' }),
+            el('strong', { text: h.title || '(naamloos)' }),
+            h.featured && !isPast ? el('span', { class: 'badge hot', text: 'Voorpagina' }) : null,
+            isPast ? el('span', { class: 'badge', text: 'Voorbij' }) : null,
+            h.hidden ? el('span', { class: 'badge', text: 'Verborgen' }) : null,
+          ]),
+          el('small', { text: [h.endDate ? `t/m ${nlDate(h.endDate)}` : '', h.time, h.description].filter(Boolean).join(' · ') }),
+        ]),
+      ]),
+      isPast ? null : el('div', { class: 'row-actions' }, [
+        toggle('Voorpagina', h.featured, (v) => { h.featured = v; changed(); }),
+      ]),
+    ]);
+  };
+
+  if (coming.length) main.append(el('ul', { class: 'item-list boxed' }, coming.map(row)));
+  else main.append(el('p', { class: 'empty small', text: 'Geen komende events. Voeg er een toe — met poster als je die hebt.' }));
+  main.append(el('button', { type: 'button', class: 'add-row', text: '+ Event toevoegen', onclick: () => editHappening(null) }));
+
+  if (past.length) {
+    main.append(el('details', { class: 'past' }, [
+      el('summary', { text: `Voorbije events (${past.length}) — staan niet meer op de site` }),
+      el('ul', { class: 'item-list boxed' }, past.map(row)),
+      el('button', {
+        type: 'button', class: 'btn btn-ghost btn-sm', text: '🧹 Voorbije events verwijderen',
+        onclick: async () => {
+          if (!(await confirmBox(`${past.length} voorbije event(s) en hun posters verwijderen?`, { okText: 'Verwijderen', danger: true }))) return;
+          state.doc.happenings = list.filter((h) => !past.includes(h));
+          changed();
+        },
+      }),
+    ]));
+  }
+}
+
+/** Upload-veld voor een poster. Uploadt meteen; het event zelf wordt pas zichtbaar na publiceren. */
+function posterField(initial) {
+  let value = initial || '';
+  const preview = el('div', { class: 'poster-preview' });
+  const status = el('span', { class: 'field-help' });
+  const fileInput = el('input', { type: 'file', accept: 'image/*', hidden: true });
+  const pick = el('button', { type: 'button', class: 'btn btn-ghost btn-sm' });
+  const remove = el('button', { type: 'button', class: 'btn btn-ghost btn-sm', text: 'Weghalen' });
+
+  const draw = () => {
+    clear(preview);
+    pick.textContent = value ? '🖼 Andere poster kiezen' : '🖼 Poster kiezen';
+    remove.hidden = !value;
+    if (!value) return;
+    preview.append(el('span', { class: 'muted small', text: 'Laden…' }));
+    loadPoster(value, state.doc.info.posters, { demo: !!state.session.demo }).then((src) => {
+      clear(preview);
+      preview.append(src ? el('img', { src, alt: 'Poster' }) : el('span', { class: 'muted small', text: 'Poster nog niet zichtbaar (kan een paar minuten duren).' }));
+    });
+  };
+
+  pick.onclick = () => fileInput.click();
+  remove.onclick = () => { value = ''; draw(); };
+  fileInput.onchange = async () => {
+    const file = fileInput.files?.[0];
+    fileInput.value = '';
+    if (!file) return;
+    pick.disabled = true;
+    status.textContent = 'Verkleinen…';
+    try {
+      const dataUrl = await compressImage(file);
+      status.textContent = 'Uploaden…';
+      const id = uid('poster');
+      await uploadPoster(id, dataUrl);
+      rememberPoster(id, dataUrl);
+      value = id;
+      status.textContent = `Klaar (${Math.round(dataUrl.length / 1024)} kB). Vergeet niet op Opslaan en daarna Publiceren te drukken.`;
+      draw();
+    } catch (err) {
+      status.textContent = `Uploaden mislukt: ${errorText(err)}`;
+    } finally {
+      pick.disabled = false;
+    }
+  };
+
+  draw();
+  return {
+    node: el('div', { class: 'poster-field' }, [preview, el('div', { class: 'btn-row' }, [pick, remove]), status, fileInput]),
+    get: () => value,
+  };
+}
+
+async function uploadPoster(id, dataUrl) {
+  if (state.session.demo) {
+    try { setDemoPoster(id, dataUrl); } catch { throw new Error('De demo-opslag in deze browser is vol.'); }
+    return;
+  }
+  const posters = state.doc.info.posters;
+  if (!posters.gistId) {
+    // Eerste poster: maak de aparte poster-Gist aan.
+    const created = await createFilesGist(state.session.token, "Pass The Dutchie — posters bij events (beheerd via beheer.html)", {
+      'leesmij.txt': 'Posters bij de events op de website van Pass The Dutchie. Beheerd door beheer.html.',
+      [posterFile(id)]: dataUrl,
+    });
+    posters.gistId = created.id;
+    posters.owner = created.owner || state.session.login || '';
+    changed({ rerender: false });
+    return;
+  }
+  await writeFiles(state.session.token, posters.gistId, { [posterFile(id)]: dataUrl });
+}
+
+function editHappening(h) {
+  openForm({
+    title: h ? 'Event bewerken' : 'Nieuw event',
+    fields: [
+      { key: 'title', label: 'Titel', value: h?.title, placeholder: 'bijv. Halloween Party' },
+      { key: 'date', label: 'Datum', type: 'date', value: h?.date || '' },
+      { key: 'endDate', label: 'Einddatum (optioneel)', type: 'date', value: h?.endDate || '', help: 'Alleen voor events van meerdere dagen.' },
+      { key: 'time', label: 'Tijd', value: h?.time, placeholder: 'bijv. 21:00 – late' },
+      { key: 'description', label: 'Omschrijving', type: 'textarea', value: h?.description, placeholder: 'bijv. Costume contest, DJ Tony, free shot for the best outfit!' },
+      { key: 'poster', label: 'Poster', type: 'custom', render: () => posterField(h?.poster), help: 'Een foto of afbeelding; wordt automatisch verkleind.' },
+      { key: 'featured', label: 'Uitlichten op de voorpagina', type: 'checkbox', value: h ? h.featured : true },
+      { key: 'hidden', label: 'Verbergen op de website', type: 'checkbox', value: h?.hidden },
+    ],
+    submitText: h ? 'Opslaan' : 'Toevoegen',
+    onSave: (v) => {
+      if (!v.title) return 'Geef het event een titel.';
+      if (!v.date) return 'Kies een datum.';
+      if (v.endDate && v.endDate < v.date) return 'De einddatum ligt vóór de begindatum.';
+      if (v.endDate === v.date) v.endDate = '';
+      if (h) Object.assign(h, v);
+      else state.doc.happenings.push({ id: uid('hap'), ...v });
+      changed();
+    },
+    onDelete: h ? () => { state.doc.happenings.splice(state.doc.happenings.indexOf(h), 1); changed(); } : null,
+  });
+}
+
+function renderWeekly(main) {
+  const events = state.doc.events;
+  main.append(el('div', { class: 'list-head spaced' }, [
+    el('h2', { text: 'Vaste weekavonden' }),
+    el('span', { class: 'muted small', text: 'Staan op de site onder Events → "Every week".' }),
   ]));
   main.append(el('ul', { class: 'item-list boxed' }, events.map((ev, i) => el('li', { class: `item-row${ev.hidden ? ' is-hidden' : ''}` }, [
     el('button', { type: 'button', class: 'item-main', onclick: () => editEvent(ev) }, [
@@ -696,12 +895,12 @@ function renderEventsTab(main) {
       iconBtn('Omlaag', '↓', () => { move(events, i, 1); changed(); }, i === events.length - 1 ? 'off' : ''),
     ]),
   ]))));
-  main.append(el('button', { type: 'button', class: 'add-row', text: '+ Activiteit toevoegen', onclick: () => editEvent(null) }));
+  main.append(el('button', { type: 'button', class: 'add-row', text: '+ Weekavond toevoegen', onclick: () => editEvent(null) }));
 }
 
 function editEvent(ev) {
   openForm({
-    title: ev ? 'Activiteit bewerken' : 'Nieuwe activiteit',
+    title: ev ? 'Weekavond bewerken' : 'Nieuwe weekavond',
     fields: [
       { key: 'day', label: 'Dag', value: ev?.day, placeholder: 'bijv. Friday', help: 'Gebruik de Engelse dagnaam, dan krijgt hij op die dag het label "Tonight".' },
       { key: 'title', label: 'Titel', value: ev?.title, placeholder: 'bijv. Ladies night' },
@@ -711,7 +910,7 @@ function editEvent(ev) {
     ],
     submitText: ev ? 'Opslaan' : 'Toevoegen',
     onSave: (v) => {
-      if (!v.title) return 'Geef de activiteit een titel.';
+      if (!v.title) return 'Geef de weekavond een titel.';
       if (ev) Object.assign(ev, v);
       else state.doc.events.push({ id: uid('ev'), ...v });
       changed();
@@ -897,7 +1096,7 @@ async function reload() {
 
 async function logout() {
   if (isDirty() && !(await confirmBox('Je hebt niet-gepubliceerde wijzigingen. Toch afmelden?', { okText: 'Afmelden', danger: true }))) return;
-  if (state.session?.demo) setDemoDoc(null);
+  if (state.session?.demo) { setDemoDoc(null); clearDemoPosters(); }
   storageSet(SESSION_KEY, null);
   storageSet(DRAFT_KEY, null);
   state.session = null;
