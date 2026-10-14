@@ -88,6 +88,7 @@ assets/js/posters.js    posters verkleinen, uploaden en laden
 assets/js/dom.js        kleine DOM-hulpjes (alles via textContent)
 assets/css/             base.css (gedeeld), site.css, admin.css
 qr/                     QR-codes naar de site (los, SVG, en een printkaart)
+docs/handleiding.pdf     handleiding voor het beheer (ook online: …/passthedutchie/docs/handleiding.pdf)
 ```
 
 Lokaal bekijken: `python3 -m http.server` in de repo en open
