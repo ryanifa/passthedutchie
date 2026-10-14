@@ -399,12 +399,13 @@ section { scroll-margin-top: 72px; }
 .lightbox::backdrop { background: rgba(3,7,18,.8); backdrop-filter: blur(6px); }
 .lightbox[open] { animation: rise .2s ease; }
 .lb-close {
-  position: sticky; top: 10px; float: right; margin: 10px 10px 0 0; z-index: 2;
+  position: sticky; top: 10px; float: right; margin: 10px 10px -50px 0; z-index: 2;
   width: 40px; height: 40px; border-radius: 50%; border: 0; cursor: pointer;
   background: rgba(10,18,36,.75); color: #fff; font-size: 18px; backdrop-filter: blur(6px);
 }
 .lb-poster { width: 100%; height: auto; display: block; }
 .lb-text { padding: 18px 20px 22px; display: grid; gap: 8px; }
+.lb-close + .lb-body > .lb-text:first-child { padding-right: 64px; }
 .lb-when { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--gold-2); font-weight: 700; }
 .lb-when svg { width: 18px; height: 18px; fill: currentColor; }
 .lb-text h2 { font-family: var(--display); font-size: 28px; }

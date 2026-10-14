@@ -247,8 +247,8 @@ function dateBlock(h) {
 function openEvent(h) {
   const label = whenLabel(h);
   const body = clear($('#lb-body'));
+  if (h.poster) body.append(posterImg(h.poster, 'lb-poster', `Poster: ${h.title}`));
   body.append(
-    h.poster ? posterImg(h.poster, 'lb-poster', `Poster: ${h.title}`) : null,
     el('div', { class: 'lb-text' }, [
       el('p', { class: 'lb-when' }, [icon('cal'), [label, h.time].filter(Boolean).join(' · ')]),
       el('h2', { id: 'lb-title', text: h.title }),
