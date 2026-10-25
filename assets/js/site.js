@@ -113,7 +113,9 @@ function renderTabs() {
 
 function matches(item, category) {
   if (!query) return true;
-  const hay = `${item.name} ${item.description} ${category.name}`.toLowerCase();
+  const opts = [...item.extras, ...category.extras].map((x) => x.name)
+    .concat([...item.choices, ...category.choices].flatMap((c) => [c.label, ...c.values]));
+  const hay = `${item.name} ${item.description} ${category.name} ${opts.join(' ')}`.toLowerCase();
   return query.split(/\s+/).every((w) => hay.includes(w));
 }
 
@@ -154,6 +156,7 @@ function renderMenu() {
           ]),
           cat.price !== null ? el('span', { class: 'cat-price', text: money(cat.price) }) : null,
         ]),
+        options(cat, 'cat-options'),
         el('ul', { class: 'items' }, items.map((item) => el('li', { class: `item${item.soldOut ? ' sold-out' : ''}` }, [
           el('div', { class: 'item-line' }, [
             el('span', { class: 'item-name' }, [
@@ -165,6 +168,7 @@ function renderMenu() {
             el('span', { class: 'item-price', text: item.price !== null ? money(item.price) : '' }),
           ]),
           item.description ? el('p', { class: 'item-desc', text: item.description }) : null,
+          options(item, 'item-options'),
         ]))),
       ]));
     }
@@ -174,6 +178,24 @@ function renderMenu() {
   $('#menu-empty').hidden = shown > 0;
   chips.hidden = !chips.children.length;
   observeChips();
+}
+
+/** Extras ("+ Cheese $3") and pick-one choices ("Sauce: BBQ · Jerk"), always visible. */
+function options(x, cls) {
+  if (!x.extras.length && !x.choices.length) return null;
+  return el('div', { class: `options ${cls}` }, [
+    x.extras.length ? el('div', { class: 'opt-line' }, [
+      cls === 'cat-options' ? el('span', { class: 'opt-label', text: 'Extras' }) : null,
+      ...x.extras.map((e) => el('span', { class: `extra${e.soldOut ? ' sold-out' : ''}`, title: e.soldOut ? 'Sold out' : null }, [
+        `+ ${e.name}`,
+        e.price !== null ? el('b', { text: ` ${money(e.price)}` }) : null,
+      ])),
+    ]) : null,
+    ...x.choices.map((c) => el('div', { class: 'opt-line choice' }, [
+      el('span', { class: 'opt-label', text: c.label || 'Choose' }),
+      el('span', { class: 'choice-values', text: c.values.join(' · ') }),
+    ])),
+  ]);
 }
 
 let chipObserver;

@@ -1,9 +1,13 @@
 {
  "version": 1,
+ "migrations": [
+  "extras-v1"
+ ],
  "info": {
   "name": "Pass The Dutchie",
   "tagline": "Dutch bites, island vibes",
   "intro": "Beach bar & restaurant on the Boardwalk of Sint Maarten. Breakfast, burgers, Dutch snacks and cocktails — with live DJs and karaoke at night.",
+  "announcement": "",
   "address": "Boardwalk 137, Sint Maarten",
   "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Pass+The+Dutchie+Boardwalk+137+Sint+Maarten",
   "phone": "+1 721 588 4790",
@@ -11,7 +15,6 @@
   "instagram": "passthedutchie.sxm",
   "facebook": "passthedutchie.sxm",
   "currency": "$",
-  "announcement": "",
   "hours": [
    {
     "label": "Kitchen",
@@ -47,36 +50,45 @@
   "wifi": {
    "name": "passthedutchie",
    "password": "ontheleft"
+  },
+  "posters": {
+   "gistId": "",
+   "owner": ""
   }
  },
+ "happenings": [],
  "events": [
   {
    "id": "ev-tue",
    "day": "Tuesday",
    "title": "Karaoke night with DJ Elvis",
    "time": "20:00 – 00:00",
-   "description": ""
+   "description": "",
+   "hidden": false
   },
   {
    "id": "ev-fri",
    "day": "Friday",
    "title": "Ladies night",
    "time": "19:00 – 23:00",
-   "description": ""
+   "description": "",
+   "hidden": false
   },
   {
    "id": "ev-sat",
    "day": "Saturday",
    "title": "DJ Tony",
    "time": "19:00 – late",
-   "description": ""
+   "description": "",
+   "hidden": false
   },
   {
    "id": "ev-sun",
    "day": "Sunday",
    "title": "Local beach vibes",
    "time": "12:00 – 19:00",
-   "description": ""
+   "description": "",
+   "hidden": false
   }
  ],
  "menus": [
@@ -88,43 +100,73 @@
      "id": "breakfast",
      "name": "Dutchie Sandwiches",
      "icon": "🥪",
-     "note": "Breakfast menu · add fries +$3",
+     "note": "Breakfast menu",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-1gn206",
+       "name": "Fries",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "breakfast-dutchie-vibe",
        "name": "Dutchie Vibe",
        "description": "Egg, bacon, cheese, lettuce & tomato",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "breakfast-dutchie-dutch",
        "name": "Dutchie Dutch",
        "description": "Ham, cheese, lettuce & tomato",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "breakfast-dutchie-blt",
        "name": "Dutchie BLT",
        "description": "Bacon, lettuce & tomato",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "breakfast-dutchie-girl",
        "name": "Dutchie Girl",
        "description": "Tuna, cheese & lettuce",
        "price": 14,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "breakfast-dutchie-boy",
        "name": "Dutchie Boy",
        "description": "Chicken breast, cheese, lettuce & tomato",
        "price": 15,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -134,27 +176,42 @@
      "icon": "🍳",
      "note": "Omelettes come with small baked potatoes",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "omelette-dutchie-fly",
        "name": "Dutchie Fly",
        "description": "Chicken",
        "price": 11,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "omelette-dutchie-swim",
        "name": "Dutchie Swim",
        "description": "Shrimp",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "omelette-dutchie-nature",
        "name": "Dutchie Nature",
        "description": "Veggie",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -164,62 +221,83 @@
      "icon": "🍔",
      "note": "All burgers come with fries",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-8ofohc",
+       "name": "Cheese",
+       "price": 1,
+       "soldOut": false
+      },
+      {
+       "id": "x-nvkfs0",
+       "name": "Bacon",
+       "price": 2,
+       "soldOut": false
+      },
+      {
+       "id": "x-nhphmv",
+       "name": "Egg",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "burgers-hamburger",
        "name": "Hamburger",
        "description": "",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "burgers-chicken",
        "name": "Chicken",
        "description": "",
        "price": 14,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "burgers-fish",
        "name": "Fish",
        "description": "",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "burgers-veggie",
        "name": "Veggie",
        "description": "",
        "price": 11,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "burgers-dutchie-burger",
        "name": "Dutchie Burger",
        "description": "Egg, bacon & cheese",
        "price": 18,
-       "soldOut": false
-      },
-      {
-       "id": "burgers-extra-cheese",
-       "name": "Extra cheese",
-       "description": "Add-on",
-       "price": 1,
-       "soldOut": false
-      },
-      {
-       "id": "burgers-extra-bacon",
-       "name": "Extra bacon",
-       "description": "Add-on",
-       "price": 2,
-       "soldOut": false
-      },
-      {
-       "id": "burgers-extra-egg",
-       "name": "Extra egg",
-       "description": "Add-on",
-       "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -227,50 +305,88 @@
      "id": "meats",
      "name": "Meats & Poultry",
      "icon": "🍖",
-     "note": "Comes with plantain & salad + 1 side: fries, mashed potato, rice or mac & cheese",
+     "note": "Comes with plantain & salad",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [
+      {
+       "id": "ch-g0vm4z",
+       "label": "Choose 1 side",
+       "values": [
+        "Fries",
+        "Mashed potato",
+        "Rice",
+        "Mac & cheese"
+       ]
+      }
+     ],
      "items": [
       {
        "id": "meats-ribs",
        "name": "Ribs",
        "description": "",
        "price": 19,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "meats-chicken-leg",
        "name": "Chicken leg",
        "description": "",
        "price": 18,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "meats-ribs-chicken-combo",
        "name": "Ribs & Chicken Combo",
        "description": "",
        "price": 21,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "meats-mahi-mahi",
        "name": "Mahi Mahi",
        "description": "",
        "price": 19,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "meats-chicken-sat",
        "name": "Chicken Saté",
        "description": "",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "meats-shrimp-sat",
        "name": "Shrimp Saté",
        "description": "",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -278,36 +394,62 @@
      "id": "quesadilla",
      "name": "Quesadillas",
      "icon": "🫓",
-     "note": "Add fries +$3",
+     "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-4issrf",
+       "name": "Fries",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "quesadilla-cheese",
        "name": "Cheese",
        "description": "",
        "price": 11,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "quesadilla-chicken",
        "name": "Chicken",
        "description": "",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "quesadilla-beef",
        "name": "Beef",
        "description": "",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "quesadilla-shrimp",
        "name": "Shrimp",
        "description": "",
        "price": 15,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -315,36 +457,62 @@
      "id": "tacos",
      "name": "Tacos",
      "icon": "🌮",
-     "note": "Add fries +$3",
+     "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-681z06",
+       "name": "Fries",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "tacos-chicken",
        "name": "Chicken",
        "description": "",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "tacos-beef",
        "name": "Beef",
        "description": "",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "tacos-shrimp",
        "name": "Shrimp",
        "description": "",
        "price": 15,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "tacos-fish",
        "name": "Fish",
        "description": "",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -352,36 +520,62 @@
      "id": "wraps",
      "name": "Wraps",
      "icon": "🌯",
-     "note": "Add fries +$3",
+     "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-kp76lq",
+       "name": "Fries",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "wraps-chicken",
        "name": "Chicken",
        "description": "",
        "price": 12.5,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wraps-beef",
        "name": "Beef",
        "description": "",
        "price": 13.5,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wraps-shrimp",
        "name": "Shrimp",
        "description": "",
        "price": 15.5,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wraps-veggie",
        "name": "Veggie",
        "description": "",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -391,48 +585,86 @@
      "icon": "🍤",
      "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "appetizers-chicken-wings-7",
        "name": "Chicken Wings (7)",
-       "description": "BBQ, Buffalo, Sweet & Sour or Jerk",
+       "description": "",
        "price": 12,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": [
+        {
+         "id": "ch-st08b8",
+         "label": "Sauce",
+         "values": [
+          "BBQ",
+          "Buffalo",
+          "Sweet & Sour",
+          "Jerk"
+         ]
+        }
+       ]
       },
       {
        "id": "appetizers-calamari",
        "name": "Calamari",
        "description": "",
        "price": 14,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "appetizers-coconut-shrimp-7",
        "name": "Coconut Shrimp (7)",
        "description": "",
        "price": 15,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "appetizers-shrimp-tempura-8",
        "name": "Shrimp Tempura (8)",
        "description": "",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "appetizers-mussels-8",
        "name": "Mussels (8)",
        "description": "",
        "price": 17,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "appetizers-stewed-conchs",
        "name": "Stewed Conchs",
        "description": "",
        "price": 19,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -440,43 +672,73 @@
      "id": "salads",
      "name": "Salads",
      "icon": "🥗",
-     "note": "Add fries +$3",
+     "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-tpcs0l",
+       "name": "Fries",
+       "price": 3,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "salads-mixed-green-salad",
        "name": "Mixed Green Salad",
        "description": "",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "salads-caesar-salad",
        "name": "Caesar Salad",
        "description": "",
        "price": 13,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "salads-chicken-salad",
        "name": "Chicken Salad",
        "description": "",
        "price": 14,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "salads-shrimp-salad",
        "name": "Shrimp Salad",
        "description": "",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "salads-mahi-mahi-salad",
        "name": "Mahi Mahi Salad",
        "description": "",
        "price": 19,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -486,41 +748,64 @@
      "icon": "🇳🇱",
      "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "dutch-frikandel",
        "name": "Frikandel",
        "description": "2 pieces",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "dutch-bitterballen",
        "name": "Bitterballen",
        "description": "8 pieces",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "dutch-kipcorn",
        "name": "Kipcorn",
        "description": "2 pieces",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "dutch-kaassouffl",
        "name": "Kaassoufflé",
        "description": "2 pieces",
        "price": 10,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "dutch-mixed-snacks",
        "name": "Mixed Snacks",
        "description": "8 pieces",
        "price": 16,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -530,41 +815,64 @@
      "icon": "🥯",
      "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "johnnycake-plain",
        "name": "Plain",
        "description": "",
        "price": 2,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "johnnycake-ham",
        "name": "Ham",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "johnnycake-cheese",
        "name": "Cheese",
        "description": "",
        "price": 4,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "johnnycake-ham-cheese",
        "name": "Ham & Cheese",
        "description": "",
        "price": 5,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "johnnycake-saltfish",
        "name": "Saltfish",
        "description": "",
        "price": 6,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -574,41 +882,64 @@
      "icon": "🧒",
      "note": "Ages 0–12 · all meals come with a side of fries",
      "price": 12,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "kids-hotdog",
        "name": "Hotdog",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "kids-chicken-nuggets",
        "name": "Chicken Nuggets",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "kids-mini-cheeseburger",
        "name": "Mini Cheeseburger",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "kids-mini-chicken-wrap",
        "name": "Mini Chicken Wrap",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "kids-chicken-wings",
        "name": "Chicken Wings",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     }
@@ -624,90 +955,141 @@
      "icon": "🍹",
      "note": "",
      "price": 14,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "cocktails-mojito",
        "name": "Mojito",
        "description": "Bacardi, syrup, mint, lime juice, club soda",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-amaretto-sour",
        "name": "Amaretto Sour",
        "description": "Amaretto, sweet & sour mix, lime juice, syrup",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-whiskey-sour",
        "name": "Whiskey Sour",
        "description": "Whiskey, sweet & sour mix, lime juice, syrup",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-paloma",
        "name": "Paloma",
        "description": "Tequila, grapefruit juice, lime, syrup",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-sex-on-the-beach",
        "name": "Sex on the Beach",
        "description": "Vodka, peach schnapps, orange juice, cranberry juice",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-planter-s-punch",
        "name": "Planter's Punch",
        "description": "Bacardi, Malibu, mix purée, orange & pineapple juice, grenadine, Myers floater",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-dark-stormy",
        "name": "Dark & Stormy",
        "description": "Myers, ginger beer, lime, bitters",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-cuba-libre",
        "name": "Cuba Libre",
        "description": "Havana Club, coke, lime",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-gin-sin",
        "name": "Gin & Sin",
        "description": "Gin, orange juice, lime juice & sugar cane",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-roxsy",
        "name": "Roxsy",
        "description": "Gin, sweet & sour, topped with ginger beer",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-painkiller",
        "name": "Painkiller",
        "description": "Dark rum, white rum, orange juice, pineapple juice, Coco López & nutmeg",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "cocktails-old-fashioned",
        "name": "Old Fashioned",
        "description": "Whiskey, bitters & brown sugar",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -717,34 +1099,53 @@
      "icon": "✨",
      "note": "Ask the bar what's in them",
      "price": 17,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "specials-dirty-dutchie",
        "name": "Dirty Dutchie",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "specials-black-dutchie",
        "name": "Black Dutchie",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "specials-falling-dutchie",
        "name": "Falling Dutchie",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "specials-high-it-up-dutchie",
        "name": "High It Up Dutchie!",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -752,92 +1153,150 @@
      "id": "frozen",
      "name": "Frozen Drinks",
      "icon": "🧊",
-     "note": "$12 · with alcohol $16",
+     "note": "",
      "price": 12,
+     "hidden": false,
+     "extras": [
+      {
+       "id": "x-sn334s",
+       "name": "With alcohol",
+       "price": 4,
+       "soldOut": false
+      }
+     ],
+     "choices": [],
      "items": [
       {
        "id": "frozen-strawberry",
        "name": "Strawberry",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-raspberry",
        "name": "Raspberry",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-banana",
        "name": "Banana",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-sweet-sour",
        "name": "Sweet & Sour",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-passion-fruit",
        "name": "Passion Fruit",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-pi-a-colada",
        "name": "Piña Colada",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-margarita",
        "name": "Margarita",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-peach",
        "name": "Peach",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-mango",
        "name": "Mango",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-watermelon",
        "name": "Watermelon",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-bloody-mary",
        "name": "Bloody Mary",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "frozen-home-made-guavaberry",
        "name": "Home-made Guavaberry",
        "description": "Daily special · comes with alcohol",
        "price": 18,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -847,83 +1306,130 @@
      "icon": "🍺",
      "note": "",
      "price": 4,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "beers-carib",
        "name": "Carib",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-corona",
        "name": "Corona",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-coronita",
        "name": "Coronita",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-heineken",
        "name": "Heineken",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-amstel-bright",
        "name": "Amstel Bright",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-coors-light",
        "name": "Coors Light",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-sxm-beer",
        "name": "SXM Beer",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-mackenson",
        "name": "Mackenson",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-rude-boy",
        "name": "Rude Boy",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-desperados-red",
        "name": "Desperados Red",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "beers-desperados-lime",
        "name": "Desperados Lime",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -933,41 +1439,64 @@
      "icon": "🍷",
      "note": "",
      "price": 5,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "wines-guinness",
        "name": "Guinness",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wines-magnum",
        "name": "Magnum",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wines-red-wine",
        "name": "Red wine",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wines-white-wine",
        "name": "White wine",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "wines-prosecco",
        "name": "Prosecco",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -977,90 +1506,141 @@
      "icon": "🥤",
      "note": "",
      "price": null,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "soft-sprite",
        "name": "Sprite",
        "description": "",
        "price": 2,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-coca-cola",
        "name": "Coca-Cola",
        "description": "",
        "price": 2,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-coca-cola-zero",
        "name": "Coca-Cola Zero",
        "description": "",
        "price": 2,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-water",
        "name": "Water",
        "description": "",
        "price": 2,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-tonic-water",
        "name": "Tonic water",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-ginger-ale",
        "name": "Ginger ale",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-club-soda",
        "name": "Club soda",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-malta",
        "name": "Malta",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-ting",
        "name": "Ting",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-red-bull",
        "name": "Red Bull",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-ginger-beer",
        "name": "Ginger beer",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "soft-smirnoff-ice",
        "name": "Smirnoff Ice",
        "description": "",
        "price": 3,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     },
@@ -1070,41 +1650,64 @@
      "icon": "🥭",
      "note": "Fresh every day, in a bottle",
      "price": 8,
+     "hidden": false,
+     "extras": [],
+     "choices": [],
      "items": [
       {
        "id": "juices-passion-fruit",
        "name": "Passion Fruit",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "juices-ginger-beer",
        "name": "Ginger Beer",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "juices-tamarind",
        "name": "Tamarind",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "juices-peanut",
        "name": "Peanut",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       },
       {
        "id": "juices-sea-moss",
        "name": "Sea Moss",
        "description": "",
        "price": null,
-       "soldOut": false
+       "soldOut": false,
+       "popular": false,
+       "hidden": false,
+       "extras": [],
+       "choices": []
       }
      ]
     }

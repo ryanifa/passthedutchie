@@ -49,6 +49,12 @@ een gele balk erboven.
   verplaatsen en verwijderen. Per item: prijs, omschrijving, *uitverkocht*,
   *populair* en *verbergen*. Een categorie kan één prijs voor alles hebben
   (bijv. cocktails $14).
+  - **Extra's** met meerprijs (*+ Cheese $3*) en **keuzes** zonder meerprijs
+    (*Choose 1 side: Fries · Rice*), per gerecht of voor een hele categorie.
+    Op de site altijd zichtbaar; een extra kan ook uitverkocht zijn. Bij de
+    eerste keer openen van het beheer worden de oude omwegen ("Extra cheese" als
+    gerecht, "add fries +$3" in de toelichting) eenmalig omgezet; dat staat dan
+    als concept klaar tot je publiceert.
 - **Events** — twee soorten:
   - *Events met een datum* (bijv. een Halloween-feest), met tijd, omschrijving en
     eventueel een **poster**. Met *Voorpagina* aan staat het event bovenaan de

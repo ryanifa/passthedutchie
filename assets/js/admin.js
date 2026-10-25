@@ -8,7 +8,7 @@ import { checkToken, readGist, createGist, writeGist, createFilesGist, writeFile
 import { compressImage, posterFile, loadPoster, rememberPoster, setDemoPoster, clearDemoPosters } from './posters.js';
 import {
   normalize, bundledDoc, activeGistId, setLocalGistId,
-  demoDoc, setDemoDoc, cacheDoc, storageGet, storageSet, upcoming, todayIso,
+  demoDoc, setDemoDoc, cacheDoc, storageGet, storageSet, upcoming, todayIso, migrateExtras,
 } from './store.js';
 
 const SESSION_KEY = 'ptd.admin';
@@ -306,6 +306,13 @@ function loadDoc(doc, updatedAt) {
       toast('Je niet-gepubliceerde wijzigingen zijn teruggezet.', 'good', 4000);
     }
   }
+  // Eenmalig: oude omwegen ("Extra cheese" als gerecht, "add fries +$3") omzetten
+  // naar echte extra's. Komt als concept klaar; pas na Publiceren op de site.
+  const converted = migrateExtras(state.doc);
+  if (converted) {
+    storageSet(DRAFT_KEY, { key: draftKey(), doc: state.doc, base: state.baseUpdatedAt });
+    setTimeout(() => toast(`Nieuw: extra's en keuzes. ${converted} voorbeelden zijn al ingevuld — kijk ze na en druk op Publiceren.`, 'good', 9000), 300);
+  }
   renderShell();
 }
 
@@ -541,6 +548,7 @@ function categoryCard(menu, cat, ci) {
 
   const body = open ? el('div', { class: 'cat-body' }, [
     cat.note ? el('p', { class: 'cat-note', text: cat.note }) : null,
+    optionSummary(cat, 'cat-options'),
     el('ul', { class: 'item-list' }, cat.items.map((item, ii) => el('li', { class: `item-row${item.soldOut ? ' is-sold' : ''}${item.hidden ? ' is-hidden' : ''}` }, [
       el('button', { type: 'button', class: 'item-main', onclick: () => editItem(cat, item) }, [
         el('span', { class: 'item-top' }, [
@@ -550,6 +558,7 @@ function categoryCard(menu, cat, ci) {
           el('span', { class: 'item-price', text: item.price !== null ? money(item.price) : (cat.price !== null ? `(${money(cat.price)})` : '—') }),
         ]),
         item.description ? el('small', { text: item.description }) : null,
+        optionSummary(item),
       ]),
       el('div', { class: 'row-actions' }, [
         toggle('Uitverkocht', item.soldOut, (v) => { item.soldOut = v; changed(); }),
@@ -563,11 +572,84 @@ function categoryCard(menu, cat, ci) {
   return el('section', { class: `cat-card${open ? ' open' : ''}${cat.hidden ? ' is-hidden' : ''}` }, [head, body]);
 }
 
+function optionSummary(x, cls = 'opt-summary') {
+  const parts = [
+    ...x.extras.map((e) => `+ ${e.name}${e.price !== null ? ` ${money(e.price)}` : ''}${e.soldOut ? ' (op)' : ''}`),
+    ...x.choices.map((c) => `${c.label ? `${c.label}: ` : ''}${c.values.join(' / ')}`),
+  ];
+  return parts.length ? el('small', { class: cls, text: parts.join(' · ') }) : null;
+}
+
+/** Bewerkbare lijst met rijen; `row(data, remove)` bouwt één rij, `read(rowNode)` leest hem terug. */
+function listField(initial, { blank, row, read, addText }) {
+  const rows = el('div', { class: 'opt-rows' });
+  const add = (data, focus = false) => {
+    const node = row(data, () => node.remove());
+    rows.append(node);
+    if (focus) node.querySelector('input')?.focus();
+  };
+  initial.forEach((d) => add(d));
+  return {
+    node: el('div', { class: 'opt-field' }, [
+      rows,
+      el('button', { type: 'button', class: 'add-row small', text: addText, onclick: () => add(blank(), true) }),
+    ]),
+    get: () => [...rows.children].map(read).filter(Boolean),
+  };
+}
+
+function extrasField(initial = []) {
+  return listField(initial, {
+    addText: '+ Extra toevoegen',
+    blank: () => ({ id: uid('x'), name: '', price: null, soldOut: false }),
+    row: (x, remove) => {
+      const node = el('div', { class: 'opt-row extra', dataset: { id: x.id } }, [
+        el('input', { type: 'text', class: 'opt-name', placeholder: 'bijv. Cheese', value: x.name }),
+        el('input', { type: 'text', class: 'opt-price', inputmode: 'decimal', placeholder: '$', value: x.price ?? '' }),
+        el('label', { class: 'opt-sold', title: 'Uitverkocht' }, [el('input', { type: 'checkbox', checked: x.soldOut }), 'op']),
+        iconBtn('Weghalen', '✕', () => remove()),
+      ]);
+      return node;
+    },
+    read: (node) => {
+      const name = node.querySelector('.opt-name').value.trim();
+      if (!name) return null;
+      const raw = node.querySelector('.opt-price').value.trim().replace(',', '.').replace(/^[+$€£ƒ\s]+/, '');
+      const n = Number(raw);
+      return {
+        id: node.dataset.id,
+        name,
+        price: raw === '' || !Number.isFinite(n) ? null : Math.round(n * 100) / 100,
+        soldOut: node.querySelector('.opt-sold input').checked,
+      };
+    },
+  });
+}
+
+function choicesField(initial = []) {
+  return listField(initial, {
+    addText: '+ Keuze toevoegen',
+    blank: () => ({ id: uid('ch'), label: '', values: [] }),
+    row: (c, remove) => el('div', { class: 'opt-row choice', dataset: { id: c.id } }, [
+      el('input', { type: 'text', class: 'opt-label', placeholder: 'bijv. Sauce', value: c.label }),
+      el('input', { type: 'text', class: 'opt-values', placeholder: 'BBQ, Buffalo, Jerk', value: c.values.join(', ') }),
+      iconBtn('Weghalen', '✕', () => remove()),
+    ]),
+    read: (node) => {
+      const values = node.querySelector('.opt-values').value.split(',').map((v) => v.trim()).filter(Boolean);
+      if (!values.length) return null;
+      return { id: node.dataset.id, label: node.querySelector('.opt-label').value.trim(), values };
+    },
+  });
+}
+
 function itemFields(item = {}) {
   return [
     { key: 'name', label: 'Naam', value: item.name, placeholder: 'bijv. Dutchie Burger' },
     { key: 'description', label: 'Omschrijving', type: 'textarea', value: item.description, placeholder: 'bijv. Egg, bacon & cheese' },
     { key: 'price', label: 'Prijs', type: 'price', value: item.price ?? null, help: 'Leeg laten als de categorieprijs geldt.' },
+    { key: 'extras', label: "Extra's (met meerprijs)", type: 'custom', render: () => extrasField(item.extras), help: 'Bijv. Onion 2 · Cheese 3. Alleen voor dit gerecht.' },
+    { key: 'choices', label: 'Keuzes (kies er 1)', type: 'custom', render: () => choicesField(item.choices), help: 'Bijv. Sauce: BBQ, Buffalo, Jerk.' },
     { key: 'soldOut', label: 'Uitverkocht', type: 'checkbox', value: item.soldOut },
     { key: 'popular', label: 'Markeer als populair', type: 'checkbox', value: item.popular },
     { key: 'hidden', label: 'Verbergen op de website', type: 'checkbox', value: item.hidden },
@@ -610,6 +692,8 @@ function categoryFields(cat = {}) {
     { key: 'icon', label: 'Icoon (emoji)', value: cat.icon, placeholder: '🍔', maxlength: 8 },
     { key: 'note', label: 'Toelichting', value: cat.note, placeholder: 'bijv. All burgers come with fries' },
     { key: 'price', label: 'Prijs voor de hele categorie', type: 'price', value: cat.price ?? null, help: 'Bijv. "$14" bij cocktails. Leeg = elk item heeft een eigen prijs.' },
+    { key: 'extras', label: "Extra's voor alle gerechten", type: 'custom', render: () => extrasField(cat.extras), help: 'Staan één keer bovenaan de categorie, bijv. Fries 3.' },
+    { key: 'choices', label: 'Keuzes voor alle gerechten', type: 'custom', render: () => choicesField(cat.choices), help: 'Bijv. Choose 1 side: Fries, Rice, Mashed potato.' },
     { key: 'hidden', label: 'Verbergen op de website', type: 'checkbox', value: cat.hidden },
   ];
 }

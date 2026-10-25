@@ -267,3 +267,26 @@ body {
 .poster-preview:empty { display: none; }
 .poster-preview img { max-height: 260px; width: auto; max-width: 100%; border-radius: 12px; box-shadow: 0 0 0 1px var(--border-strong); }
 .field input[type="date"] { color-scheme: dark; }
+
+/* --------------------------------------------------- extras & choices */
+
+.opt-summary, .cat-options { display: block; color: var(--gold-2) !important; font-size: 12.5px; }
+.cat-options { margin: 4px 4px 2px; }
+.opt-field { display: grid; gap: 6px; }
+.opt-rows { display: grid; gap: 6px; }
+.opt-rows:empty { display: none; }
+.opt-row { display: grid; gap: 6px; align-items: center; }
+.opt-row.extra { grid-template-columns: 1fr 70px auto 38px; }
+.opt-row.choice { grid-template-columns: 110px 1fr 38px; }
+.opt-row input[type="text"] {
+  width: 100%; min-height: 44px; padding: 10px 12px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border-strong); background: rgba(0,0,0,.25); font-size: 16px;
+}
+.opt-row input[type="text"]:focus { outline: none; border-color: var(--gold); }
+.opt-sold { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--muted); }
+.opt-sold input { width: 18px; height: 18px; accent-color: var(--coral); }
+.opt-field .add-row.small { margin-top: 0; }
+@media (max-width: 420px) {
+  .opt-row.choice { grid-template-columns: 1fr 38px; }
+  .opt-row.choice .opt-values { grid-column: 1 / 2; }
+}
