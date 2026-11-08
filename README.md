@@ -12,6 +12,7 @@ Pages, en de gegevens staan als één JSON-bestand in een **Gist** (de "database
 | | |
 |---|---|
 | Hosting | GitHub Pages (deze repo, gewoon vanuit de branch) |
+| Adres | **https://go2passthedutchie.com** (domein bij Hostnet, gekoppeld via `CNAME`) |
 | Gegevens | `menu.json` in een openbare Gist |
 | Lezen (bezoekers) | Zonder sleutel, rechtstreeks van de GitHub-API |
 | Schrijven (beheer) | Met een GitHub-sleutel die alleen Gists mag |
@@ -26,6 +27,18 @@ een paar minuten achter kan lopen. Daarvoor is `gistOwner` in `config.js` nodig.
 Bezoekers krijgen meteen een menu te zien (uit de cache of uit `data/menu.json`)
 en daarna, zodra de Gist binnen is, de actuele versie. Is GitHub even niet
 bereikbaar, dan blijft de site gewoon werken.
+
+## Domein en QR-codes
+
+De officiële link is **go2passthedutchie.com**. Het oude adres
+`ryanifa.github.io/passthedutchie/` stuurt GitHub automatisch door naar het
+domein (paden blijven behouden), dus de bestaande QR-codes in `qr/` en de
+beheerlinks blijven werken. Zet bij Hostnet automatisch verlengen aan: verloopt
+het domein, dan werken ook de oude QR-codes niet meer. Noodgreep: haal het
+`CNAME`-bestand weg, dan werkt het oude adres meteen weer.
+
+DNS bij Hostnet: vier A-records (`185.199.108.153` t/m `185.199.111.153`) voor het
+domein en een CNAME `www` → `ryanifa.github.io`.
 
 ## Eenmalig instellen
 
